@@ -1,7 +1,11 @@
 ---
 # tasks file for rhel-domain
 - name: check if server is registered to redhat portal
-  shell: subscription-manager identity | grep ID | awk  '{print $3}'
+  shell: |
+  set -o pipefail
+  subscription-manager identity | grep ID | awk  '{print $3}'
+  args:
+    executable: /bin/bash
   register: id
 
 - name: debug if organization id is defined
@@ -51,7 +55,7 @@
 
 - name: deploy resolv.conf template
   template:
-    src: ../templates/resolv.conf.j2
+    src: templates/resolv.conf.j2
     dest: /etc/resolv.conf
     owner: root
     group: root
@@ -61,7 +65,11 @@
    - reload NetworkManager
 
 - name: Checking Domain Join status
-  shell: /usr/sbin/realm list |grep client-software | awk  '{print $2 }'
+  shell: |
+    set -o pipefail
+    /usr/sbin/realm list |grep client-software | awk  '{print $2 }'
+  args:
+    executable: /bin/bash
   register: ad_status
   changed_when: false
   ignore_errors: true

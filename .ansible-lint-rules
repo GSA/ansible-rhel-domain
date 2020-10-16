@@ -17,4 +17,5 @@ skip_list:
 - ANSIBLE0016
 - ANSIBLE0017
 - ANSIBLE0018
+- 102
 verbosity: 1

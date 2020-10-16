@@ -1,5 +1,5 @@
 galaxy_info:
-  role_name: rhel-domain
+  role_name: ansible-rhel-domain
   author: GSA IDT Developers
   description: ansible role to join redhat to windows domain
   company: GSA
