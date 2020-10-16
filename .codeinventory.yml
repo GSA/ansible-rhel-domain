@@ -1,5 +1,5 @@
-name: 'GSA/[ROLE_NAME]'
-description: '[ROLE_DESCRIPTION]'
+name: 'GSA/ansible-rhel-domain'
+description: 'ansible role joins a redhat server to a windows domain'
 license: cc0-1.0
 openSourceProject: 1
 governmentWideReuseProject: 1
