@@ -1,2 +1,13 @@
 ---
-# defaults file for template
+# defaults file for rhel-domain
+required_packages: # default required packages to join the domain
+  - {name: sssd}
+  - {name: realmd}
+  - {name: oddjob}
+  - {name: oddjob-mkhomedir}
+  - {name: adcli}
+  - {name: samba-common}
+  - {name: samba-common-tools}
+  - {name: krb5-workstation}
+  - {name: openldap-clients}
+  - {name: policycoreutils-python}

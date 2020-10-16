@@ -1,2 +1,16 @@
 ---
-# handlers file for template
+# handlers file for rhel-domain
+- name: restart realmd
+  service:
+    name: realmd
+    state: restarted
+
+- name: restart sssd
+  service:
+    name: sssd
+    state: restarted
+
+- name: reload NetworkManager
+  service:
+    name: NetworkManager
+    state: reloaded

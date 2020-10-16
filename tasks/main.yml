@@ -1,2 +1,71 @@
 ---
-# tasks file for template
+# tasks file for rhel-domain
+- name: check if server is registered to redhat portal
+  shell: subscription-manager identity | grep ID | awk  '{print $3}'
+  register: id
+
+- name: debug if organization id is defined
+  debug:
+    var: id.stdout
+  ignore_errors: yes
+
+- name: register to redhat network
+  command:
+    subscription-manager register
+    --org '{{ rhn_org }}'
+    --activationkey='{{ rhn_key }}'
+    --force
+  when: id.stdout != '{{ rhn_org }}'
+
+- name: install the required packages
+  yum:
+    name:
+      - '{{ item.name }}'
+    state: present
+  notify:
+    - restart realmd
+  with_items: '{{ required_packages }}'
+
+- name: update /etc/hosts file
+  lineinfile:
+     dest: /etc/hosts
+     regexp: "^{{ item['ip'] }}.*$"
+     line: "{{ item['ip'] }}\t\t{{ item['names'] | join(' ') }}"
+     state: present
+  with_items:  "{{ hosts }}"
+
+- name: make sure line 'dns=none' is set in /etc/NetworkManager/NetworkManager.conf
+  ini_file:
+    path: /etc/NetworkManager/NetworkManager.conf
+    state: present
+    no_extra_spaces: yes
+    section: main
+    option: dns
+    value: none
+    owner: root
+    group: root
+    mode: 0644
+    backup: yes
+  notify:
+    - reload NetworkManager
+
+- name: deploy resolv.conf template
+  template:
+    src: ../templates/resolv.conf.j2
+    dest: /etc/resolv.conf
+    owner: root
+    group: root
+    mode: 0644
+    backup: yes
+  notify:
+   - reload NetworkManager
+
+- name: Checking Domain Join status
+  shell: /usr/sbin/realm list |grep client-software | awk  '{print $2 }'
+  register: ad_status
+  changed_when: false
+  ignore_errors: true
+
+- name: Join system to AD and add the computer object in the Linux OU
+  shell: echo "{{ pw }}" | /bin/bash -c "/usr/sbin/realm join --user={{ user }} {{ domain }}"
+  when: ad_status.stdout != 'sssd'

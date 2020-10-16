@@ -1,2 +1,12 @@
 ---
-# vars file for template
+# vars file for rhel-domain
+
+# domain specific vars
+user: "" # user for joining the domain
+pw: "" # password for joining the domain
+domain: "" # domain to join
+nameservers: "" # domain name servers to resolve dns lookups
+
+# redhat network specific vars
+rhn_key: "" # redhat network key
+rhn_org: "" # redhat network organization
