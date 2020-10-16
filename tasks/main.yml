@@ -2,8 +2,8 @@
 # tasks file for rhel-domain
 - name: check if server is registered to redhat portal
   shell: |
-  set -o pipefail
-  subscription-manager identity | grep ID | awk  '{print $3}'
+    set -o pipefail
+    subscription-manager identity | grep ID | awk  '{print $3}'
   args:
     executable: /bin/bash
   register: id
